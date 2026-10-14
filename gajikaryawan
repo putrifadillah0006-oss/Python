@@ -1,0 +1,179 @@
+
+# ==========================================
+# CLASS INDUK: KARYAWAN
+# ==========================================
+
+class Karyawan:
+
+    # Constructor: dijalankan saat objek dibuat
+    def __init__(self, nama, id_karyawan, gaji_pokok):
+
+        # Atribut public untuk menyimpan nama karyawan
+        self.nama = nama
+
+        # Atribut public untuk menyimpan ID karyawan
+        self.id_karyawan = id_karyawan
+
+        # Atribut private untuk menyimpan gaji pokok
+        self.__gaji_pokok = 0
+
+        # Memasukkan gaji awal melalui setter agar diperiksa
+        self.set_gaji_pokok(gaji_pokok)
+
+    # Getter: mengambil nilai gaji pokok
+    def get_gaji_pokok(self):
+        return self.__gaji_pokok
+
+    # Setter: mengubah gaji pokok dengan validasi
+    def set_gaji_pokok(self, gaji_pokok):
+
+        # Memeriksa apakah gaji kurang dari atau sama dengan nol
+        if gaji_pokok <= 0:
+            print("Peringatan: Gaji pokok harus lebih dari 0!")
+
+        # Jika gaji valid, simpan nilai yang baru
+        else:
+            self.__gaji_pokok = gaji_pokok
+            print("Gaji pokok berhasil diubah.")
+
+    # Method dasar untuk menghitung total gaji
+    def hitung_gaji_total(self):
+        return self.__gaji_pokok
+
+    # Method untuk menampilkan informasi dasar karyawan
+    def tampilkan_info(self):
+        print("Nama:", self.nama)
+        print("ID Karyawan:", self.id_karyawan)
+
+        # Mengambil gaji pokok menggunakan getter
+        print("Gaji Pokok: Rp{:,.0f}".format(
+            self.get_gaji_pokok()
+        ))
+
+
+# ==========================================
+# CLASS ANAK: KARYAWAN TETAP
+# Menerapkan inheritance dari class Karyawan
+# ==========================================
+
+class KaryawanTetap(Karyawan):
+
+    # Constructor untuk karyawan tetap
+    def __init__(self, nama, id_karyawan, gaji_pokok, tunjangan):
+
+        # Memanggil constructor dari class induk
+        super().__init__(nama, id_karyawan, gaji_pokok)
+
+        # Atribut tambahan untuk tunjangan jabatan
+        self.tunjangan = tunjangan
+
+    # Overriding: menghitung gaji karyawan tetap
+    def hitung_gaji_total(self):
+        return self.get_gaji_pokok() + self.tunjangan
+
+    # Overriding: menampilkan informasi karyawan tetap
+    def tampilkan_info(self):
+        print("\n=== DATA KARYAWAN TETAP ===")
+
+        # Menampilkan informasi dasar dari class induk
+        super().tampilkan_info()
+
+        # Menampilkan tunjangan jabatan
+        print("Tunjangan: Rp{:,.0f}".format(
+            self.tunjangan
+        ))
+
+        # Menampilkan total gaji karyawan tetap
+        print("Total Gaji: Rp{:,.0f}".format(
+            self.hitung_gaji_total()
+        ))
+
+
+# ==========================================
+# CLASS ANAK: KARYAWAN KONTRAK
+# Menerapkan inheritance dari class Karyawan
+# ==========================================
+
+class KaryawanKontrak(Karyawan):
+
+    # Constructor untuk karyawan kontrak
+    def __init__(self, nama, id_karyawan, gaji_pokok,
+                 jam_lembur, tarif_lembur):
+
+        # Memanggil constructor dari class induk
+        super().__init__(nama, id_karyawan, gaji_pokok)
+
+        # Atribut tambahan untuk menghitung uang lembur
+        self.jam_lembur = jam_lembur
+        self.tarif_lembur = tarif_lembur
+
+    # Overriding: menghitung gaji karyawan kontrak
+    def hitung_gaji_total(self):
+        return (
+            self.get_gaji_pokok()
+            + (self.jam_lembur * self.tarif_lembur)
+        )
+
+    # Overriding: menampilkan informasi karyawan kontrak
+    def tampilkan_info(self):
+        print("\n=== DATA KARYAWAN KONTRAK ===")
+
+        # Menampilkan informasi dasar dari class induk
+        super().tampilkan_info()
+
+        # Menampilkan jumlah jam lembur
+        print("Jam Lembur:", self.jam_lembur, "jam")
+
+        # Menampilkan tarif untuk setiap jam lembur
+        print("Tarif Lembur: Rp{:,.0f}".format(
+            self.tarif_lembur
+        ))
+
+        # Menampilkan total gaji setelah ditambah uang lembur
+        print("Total Gaji: Rp{:,.0f}".format(
+            self.hitung_gaji_total()
+        ))
+
+
+# ==========================================
+# PROGRAM UTAMA
+# ==========================================
+
+# Membuat objek karyawan tetap bernama Andi
+karyawan1 = KaryawanTetap(
+    "Andi", "K001", 4000000, 500000
+)
+
+# Membuat objek karyawan kontrak bernama Budi
+karyawan2 = KaryawanKontrak(
+    "Budi", "K002", 3000000, 10, 20000
+)
+
+# Menyimpan kedua objek ke dalam satu list
+daftar_karyawan = [karyawan1, karyawan2]
+
+# POLYMORPHISM:
+# Memanggil method yang sama untuk objek dengan jenis berbeda
+print("\n===== DAFTAR KARYAWAN =====")
+
+for karyawan in daftar_karyawan:
+    karyawan.tampilkan_info()
+
+
+# ==========================================
+# PENGUJIAN ENCAPSULATION
+# ==========================================
+
+print("\n===== PENGUJIAN ENCAPSULATION =====")
+
+# Menguji setter dengan gaji yang tidak valid
+print("\nMengubah gaji dengan nilai tidak valid:")
+karyawan1.set_gaji_pokok(-1000000)
+
+# Menguji setter dengan gaji yang valid
+print("\nMengubah gaji dengan nilai valid:")
+karyawan1.set_gaji_pokok(4500000)
+
+# Menampilkan kembali data setelah gaji diubah
+print("\nData setelah gaji diubah:")
+karyawan1.tampilkan_info()
